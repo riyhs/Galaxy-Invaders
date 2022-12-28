@@ -27,6 +27,14 @@ void Game::run()
 
 void Game::update()
 {
+	sf::Event e;
+
+	while (this->window->pollEvent(e)) {
+		if (e.Event::type == sf::Event::Closed)
+			this->window->close();
+		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
+			this->window->close();
+	}
 }
 
 void Game::render()
