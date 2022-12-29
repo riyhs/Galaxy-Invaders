@@ -17,6 +17,19 @@ void Game::initTextures()
 	}
 }
 
+void Game::initGUI()
+{
+	// Load font
+	if (!this->font.loadFromFile("Fonts/PixellettersFull.ttf"))
+		std::cout << "ERROR::GAME::Failed to load font" << "\n";
+
+	//Init point text
+	this->pointText.setFont(this->font);
+	this->pointText.setCharacterSize(12);
+	this->pointText.setFillColor(sf::Color::White);
+	this->pointText.setString("test");
+}
+
 void Game::initPlayer()
 {
 	this->player = new Player();
@@ -32,6 +45,7 @@ Game::Game()
 {
 	this->initWindow();
 	this->initTextures();
+	this->initGUI();
 	this->initPlayer();
 	this->initEnemies();
 }
@@ -70,6 +84,27 @@ void Game::run()
 
 }
 
+void Game::updateCombat()
+{
+	for (int i = 0; i < this->enemies.size(); ++i)
+	{
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets.size() && enemy_deleted == false; k++)
+		{
+			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
+			{
+				delete this->enemies[i];
+				this->enemies.erase(this->enemies.begin() + i);
+
+				delete this->bullets[k];
+				this->bullets.erase(this->bullets.begin() + k);
+
+				enemy_deleted = true;
+			}
+		}
+	}
+}
+
 void Game::update()
 {
 	this->updatePollEvents();
@@ -81,6 +116,15 @@ void Game::update()
 	this->updateBullets();
 	
 	this->updateEnemies();
+
+	this->updateCombat();
+
+	this->updateGUI();
+}
+
+void Game::updateGUI()
+{
+
 }
 
 void Game::updateBullets()
@@ -106,6 +150,7 @@ void Game::updateBullets()
 
 void Game::updateEnemies()
 {
+	//Spawning
 	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
@@ -113,16 +158,22 @@ void Game::updateEnemies()
 		this->spawnTimer = 0.f;
 	}
 
-	for (int i = 0; i < this->enemies.size(); ++i)
+	//Update
+	unsigned counter = 0;
+	for (auto* enemy : this->enemies)
 	{
-		this->enemies[i]->update();
+		enemy->update();
 
-		//Remove enemy at the bottom of the screen
-		if (this->enemies[i]->getBounds().top > this->window->getSize().y)
+		// Bullet out of screen
+		if (enemy->getBounds().top > this->window->getSize().y)
 		{
-			this->enemies.erase(this->enemies.begin() + i);
-			std::cout << this->enemies.size() << "\n";
+			// Delete bullet
+			delete this->enemies.at(counter);
+			this->enemies.erase(this->enemies.begin() + counter);
+			--counter;
 		}
+
+		++counter;
 	}
 }
 
@@ -166,6 +217,11 @@ void Game::updateInput()
 	}
 }
 
+void Game::renderGUI()
+{
+	this->window->draw(this->pointText);
+}
+
 void Game::render()
 {
 	this->window->clear();
@@ -182,6 +238,8 @@ void Game::render()
 	{
 		enemy->render(this->window);
 	}
+
+	this->renderGUI();
 
 	this->window->display();
 }
