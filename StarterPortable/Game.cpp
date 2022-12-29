@@ -22,11 +22,18 @@ void Game::initPlayer()
 	this->player = new Player();
 }
 
+void Game::initEnemies()
+{
+	this->spawnTimerMax = 50.f;
+	this->spawnTimer = this->spawnTimerMax;
+}
+
 Game::Game()	
 {
 	this->initWindow();
 	this->initTextures();
 	this->initPlayer();
+	this->initEnemies();
 }
 
 Game::~Game()
@@ -42,6 +49,12 @@ Game::~Game()
 
 	// Delete bullets
 	for (auto& i : this->bullets)
+	{
+		delete i;
+	}
+
+	// Delete enemies
+	for (auto& i : this->enemies)
 	{
 		delete i;
 	}
@@ -66,6 +79,8 @@ void Game::update()
 	this->player->update();
 	
 	this->updateBullets();
+	
+	this->updateEnemies();
 }
 
 void Game::updateBullets()
@@ -86,6 +101,21 @@ void Game::updateBullets()
 		}
 
 		++counter;
+	}
+}
+
+void Game::updateEnemies()
+{
+	this->spawnTimer += 0.5f;
+	if (this->spawnTimer >= this->spawnTimerMax)
+	{
+		this->enemies.push_back(new Enemy(rand() % 200, rand() % 200));
+		this->spawnTimer = 0.f;
+	}
+
+	for (auto* enemy : this->enemies)
+	{
+		enemy->update();
 	}
 }
 
@@ -118,7 +148,14 @@ void Game::updateInput()
 		sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) &&
 		this->player->canAttack()) 
 	{
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 4.f));
+		this->bullets.push_back(
+			new Bullet(this->textures["BULLET"], 
+			this->player->getPos().x + this->player->getBounds().width / 2.f, 
+			this->player->getPos().y, 
+			0.f, 
+			-1.f,
+			4.f)
+		);
 	}
 }
 
@@ -132,6 +169,11 @@ void Game::render()
 	for (auto* bullet : this->bullets)
 	{
 		bullet->render(this->window);
+	}
+
+	for (auto* enemy : this->enemies)
+	{
+		enemy->render(this->window);
 	}
 
 	this->window->display();
