@@ -1,10 +1,20 @@
 #include "Game.h"
+#include <iostream>
 
 // Private functions
 void Game::initWindow()
 {
 	this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "OKE JALAN", sf::Style::Default);
 	this->window->setFramerateLimit(144);
+}
+
+void Game::initTextures()
+{
+	this->textures["BULLET"] = new sf::Texture();
+	if (!this->textures["BULLET"]->loadFromFile("Assets/Textures/bullet2.png"))
+	{
+		std::cout << "ERROR::GAME::INITTEXTURE::Could not load texture file." << "\n";
+	}
 }
 
 void Game::initPlayer()
@@ -15,6 +25,7 @@ void Game::initPlayer()
 Game::Game()	
 {
 	this->initWindow();
+	this->initTextures();
 	this->initPlayer();
 }
 
@@ -22,6 +33,18 @@ Game::~Game()
 {
 	delete this->window;
 	delete this->player;
+
+	// Delete textures
+	for (auto& i : this->textures)
+	{
+		delete i.second;
+	}
+
+	// Delete bullets
+	for (auto& i : this->bullets)
+	{
+		delete i;
+	}
 }
 
 // Functions
@@ -36,6 +59,38 @@ void Game::run()
 
 void Game::update()
 {
+	this->updatePollEvents();
+
+	this->updateInput();
+	
+	this->player->update();
+	
+	this->updateBullets();
+}
+
+void Game::updateBullets()
+{
+	unsigned counter = 0;
+
+	for (auto* bullet : this->bullets)
+	{
+		bullet->update();
+	
+		// Bullet out of screen
+		if (bullet->getBounds().top + bullet->getBounds().height < 0.f)
+		{
+			// Delete bullet
+			delete this->bullets.at(counter);
+			this->bullets.erase(this->bullets.begin() + counter);
+			--counter;
+		}
+
+		++counter;
+	}
+}
+
+void Game::updatePollEvents()
+{
 	sf::Event e;
 
 	while (this->window->pollEvent(e)) {
@@ -44,7 +99,10 @@ void Game::update()
 		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
 			this->window->close();
 	}
+}
 
+void Game::updateInput()
+{
 	// Move player
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		this->player->move(-1.f, 0.f);
@@ -54,6 +112,14 @@ void Game::update()
 		this->player->move(0.f, -1.f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.f, 1.f);
+
+	// Add bullets
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) || 
+		sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) &&
+		this->player->canAttack()) 
+	{
+		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y, 0.f, -1.f, 4.f));
+	}
 }
 
 void Game::render()
@@ -62,6 +128,11 @@ void Game::render()
 
 	// Draw all the stufs
 	this->player->render(*this->window);
+
+	for (auto* bullet : this->bullets)
+	{
+		bullet->render(this->window);
+	}
 
 	this->window->display();
 }
