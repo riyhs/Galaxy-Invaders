@@ -2,6 +2,7 @@
 #include<map>
 #include "Player.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
 class Game
 {
@@ -15,10 +16,16 @@ private:
 	// Player
 	Player* player;
 
+	// Enemy
+	float spawnTimer;
+	float spawnTimerMax;
+	std::vector<Enemy*> enemies;
+
 	// Private functions
 	void initWindow();
 	void initTextures();
 	void initPlayer();
+	void initEnemies();
 
 public:
 	Game();
@@ -28,6 +35,7 @@ public:
 	void run();
 	void update();
 	void updateBullets();
+	void updateEnemies();
 	void updatePollEvents();
 	void updateInput();
 	void render();
