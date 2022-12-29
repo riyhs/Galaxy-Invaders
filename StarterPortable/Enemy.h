@@ -20,7 +20,7 @@ public:
 	virtual ~Enemy();
 
 	// Accessors
-	const sf::FloatRect getBounds() const
+	const sf::FloatRect getBounds() const;
 
 	// Functions
 	void update();
