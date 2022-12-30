@@ -11,7 +11,7 @@ void Game::initWindow()
 void Game::initTextures()
 {
 	this->textures["BULLET"] = new sf::Texture();
-	if (!this->textures["BULLET"]->loadFromFile("Assets/Textures/bullet2.png"))
+	if (!this->textures["BULLET"]->loadFromFile("Assets/Textures/fireball.png"))
 	{
 		std::cout << "ERROR::GAME::INITTEXTURE::Could not load texture file." << "\n";
 	}

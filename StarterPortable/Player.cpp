@@ -12,7 +12,7 @@ void Player::initVariables()
 // Private functions
 void Player::initTexture()
 {
-	if (!this->texture.loadFromFile("Assets/Textures/ship.png"))
+	if (!this->texture.loadFromFile("Assets/Textures/SpaceShip.png"))
 	{
 		std::cout << "ERROR::PLAYER::INITTEXTURE::Could not load texture file." << "\n";
 	}
