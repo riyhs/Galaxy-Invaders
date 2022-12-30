@@ -8,6 +8,7 @@
 Bullet::Bullet(sf::Texture* texture, float posX, float posY, float dirX, float dirY, float movementSpeed)
 {
 	this->shape.setTexture(*texture);
+	this->shape.setScale(.07f, .07f);
 	this->shape.setPosition(posX, posY);
 	this->direction.x = dirX;
 	this->direction.y = dirY;
