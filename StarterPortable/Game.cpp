@@ -30,6 +30,15 @@ void Game::initGUI()
 	this->pointText.setString("test");
 }
 
+void Game::initBackground()
+{
+	if (!this->worldBackgroundTex.loadFromFile("Assets/Textures/background.jpg"))
+	{
+		std::cout << "ERROR::GAME::Failed to load background" << "\n";
+	}
+	this->worldBackground.setTexture(this->worldBackgroundTex);
+}
+
 void Game::initPlayer()
 {
 	this->player = new Player();
@@ -46,6 +55,7 @@ Game::Game()
 	this->initWindow();
 	this->initTextures();
 	this->initGUI();
+	this->initBackground();
 	this->initPlayer();
 	this->initEnemies();
 }
@@ -202,14 +212,14 @@ void Game::updateInput()
 		this->player->move(0.f, 1.f);
 
 	// Add bullets
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::RControl) || 
-		sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) &&
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) /* ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))*/) &&
 		this->player->canAttack()) 
 	{
 		this->bullets.push_back(
 			new Bullet(this->textures["BULLET"], 
-			this->player->getPos().x + this->player->getBounds().width / 2.f, 
-			this->player->getPos().y, 
+			this->player->getPos().x + 33/* + this->player->getBounds().width / 2.f */ ,
+			this->player->getPos().y - 20, 
 			0.f, 
 			-1.f,
 			4.f)
@@ -222,9 +232,17 @@ void Game::renderGUI()
 	this->window->draw(this->pointText);
 }
 
+void Game::renderBackground()
+{
+	this->window->draw(this->worldBackground);
+}
+
 void Game::render()
 {
 	this->window->clear();
+
+	//Draw background
+	this->renderBackground();
 
 	// Draw all the stufs
 	this->player->render(*this->window);
