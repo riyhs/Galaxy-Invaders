@@ -39,6 +39,11 @@ void Game::initBackground()
 	this->worldBackground.setTexture(this->worldBackgroundTex);
 }
 
+void Game::initSystem()
+{
+	this->points = 0;
+}
+
 void Game::initPlayer()
 {
 	this->player = new Player();
@@ -56,6 +61,8 @@ Game::Game()
 	this->initTextures();
 	this->initGUI();
 	this->initBackground();
+	this->initSystem();
+
 	this->initPlayer();
 	this->initEnemies();
 }
@@ -103,6 +110,8 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
+				this->points += this->enemies[i]->getPoints();
+
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 
@@ -138,7 +147,11 @@ void Game::update()
 
 void Game::updateGUI()
 {
+	std::stringstream ss;
+		
+	ss << "points: " << this->points;
 
+	this->pointText.setString(ss.str());
 }
 
 void Game::updateWorld()
@@ -147,10 +160,30 @@ void Game::updateWorld()
 
 void Game::updatecollision()
 {
+	//left world collision
 	if (this->player->getBounds().left < 0.f)
 	{
 		this->player->setPosition(0.f, this->player->getBounds().top);
 	}
+
+	//right world collision
+	else if (this->player->getBounds().left + this->player->getBounds().width >= this->window->getSize().x)
+	{
+		this->player->setPosition(this->window->getSize().x - this->player->getBounds().width, this->player->getBounds().top);
+	}
+	
+	//top world collision
+	if (this->player->getBounds().top < 0.f)
+	{
+		this->player->setPosition(this->player->getBounds().left, 0.f);
+	}
+
+	//bottom world collision
+	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y)
+	{
+		this->player->setPosition(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height);
+	}
+
 }
 
 void Game::updateBullets()
@@ -193,7 +226,13 @@ void Game::updateEnemies()
 		// Bullet out of screen
 		if (enemy->getBounds().top > this->window->getSize().y)
 		{
-			// Delete bullet
+			// Delete enemy
+			delete this->enemies.at(counter);
+			this->enemies.erase(this->enemies.begin() + counter);
+			--counter;
+		}
+		else if (enemy->getBounds().intersects(this->player->getBounds()))
+		{
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
 			--counter;
