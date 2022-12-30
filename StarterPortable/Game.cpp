@@ -30,6 +30,16 @@ void Game::initGUI()
 	this->pointText.setString("test");
 }
 
+void Game::initWorld()
+{
+	if (!this->worldBackgroundTex.loadFromFile("Assets/Textures/Background.jpg"))
+	{
+		std::cout << "ERROR::GAME::COULD NOT LOAD BACKGROUND TEXTURE" << "\n";
+	}
+	this->worldBackground.setTexture(this->worldBackgroundTex);
+}
+
+
 void Game::initPlayer()
 {
 	this->player = new Player();
@@ -46,6 +56,7 @@ Game::Game()
 	this->initWindow();
 	this->initTextures();
 	this->initGUI();
+	this->initWorld();
 	this->initPlayer();
 	this->initEnemies();
 }
@@ -113,6 +124,8 @@ void Game::update()
 	
 	this->player->update();
 	
+	this->updateCollision();
+
 	this->updateBullets();
 	
 	this->updateEnemies();
@@ -120,11 +133,26 @@ void Game::update()
 	this->updateCombat();
 
 	this->updateGUI();
+
+	this->updateWorld();
 }
 
 void Game::updateGUI()
 {
 
+}
+
+void Game::updateWorld()
+{
+
+}
+
+void Game::updateCollision()
+{
+	if (this->player->getBounds().left < 0.f)
+	{
+		this->player->setPosition(0.f, this->player->getBounds().top);
+	}
 }
 
 void Game::updateBullets()
@@ -222,9 +250,17 @@ void Game::renderGUI()
 	this->window->draw(this->pointText);
 }
 
+void Game::renderWorld()
+{
+	this->window->draw(this->worldBackground);
+}
+
 void Game::render()
 {
 	this->window->clear();
+
+	// Draw World
+	this->renderWorld();
 
 	// Draw all the stufs
 	this->player->render(*this->window);
@@ -240,6 +276,6 @@ void Game::render()
 	}
 
 	this->renderGUI();
-
+	this->renderWorld();
 	this->window->display();
 }
