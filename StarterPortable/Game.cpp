@@ -122,6 +122,8 @@ void Game::update()
 	this->updateInput();
 	
 	this->player->update();
+
+	this->updatecollision();
 	
 	this->updateBullets();
 	
@@ -130,11 +132,25 @@ void Game::update()
 	this->updateCombat();
 
 	this->updateGUI();
+	
+	this->updateWorld();
 }
 
 void Game::updateGUI()
 {
 
+}
+
+void Game::updateWorld()
+{
+}
+
+void Game::updatecollision()
+{
+	if (this->player->getBounds().left < 0.f)
+	{
+		this->player->setPosition(0.f, this->player->getBounds().top);
+	}
 }
 
 void Game::updateBullets()

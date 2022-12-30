@@ -49,6 +49,8 @@ public:
 	void update();
 	void updateBullets();
 	void updateGUI();
+	void updateWorld();
+	void updatecollision();
 	void updateEnemies();
 	void updateCombat();
 	void updatePollEvents();
