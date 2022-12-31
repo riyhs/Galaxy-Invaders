@@ -30,6 +30,10 @@ private:
 	// Player
 	Player* player;
 
+	// PlayerGUI
+	sf::RectangleShape playerHpBar;
+	sf::RectangleShape playerHpBarBack;
+
 	// Enemy
 	float spawnTimer;
 	float spawnTimerMax;
