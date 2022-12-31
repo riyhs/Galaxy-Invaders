@@ -20,6 +20,8 @@ private:
 	sf::Font font;
 	sf::Text pointText;
 
+	sf::Text gameOverText;
+
 	//Background
 	sf::Texture worldBackgroundTex;
 	sf::Sprite worldBackground;

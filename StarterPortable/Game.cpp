@@ -24,10 +24,19 @@ void Game::initGUI()
 		std::cout << "ERROR::GAME::Failed to load font" << "\n";
 
 	//Init point text
+	this->pointText.setPosition(700.f, 25.f);
 	this->pointText.setFont(this->font);
-	this->pointText.setCharacterSize(12);
+	this->pointText.setCharacterSize(20);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("test");
+
+	this->gameOverText.setFont(this->font);
+	this->gameOverText.setCharacterSize(60);
+	this->gameOverText.setFillColor(sf::Color::Red);
+	this->gameOverText.setString("Game Over");
+	this->gameOverText.setPosition(
+		this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
+		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
 
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
@@ -102,8 +111,13 @@ Game::~Game()
 // Functions
 void Game::run()
 {
-	while(this->window->isOpen()) {
-		this->update();
+	while(this->window->isOpen()) 
+	{
+		this->updatePollEvents();
+
+		if(this->player->getHp() > 0)
+			this->update();
+
 		this->render();
 	}
 
@@ -134,8 +148,6 @@ void Game::updateCombat()
 
 void Game::update()
 {
-	this->updatePollEvents();
-
 	this->updateInput();
 	
 	this->player->update();
@@ -162,7 +174,6 @@ void Game::updateGUI()
 	this->pointText.setString(ss.str());
 
 	//Update player GUI
-	this->player->setHp(5);
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.f * hpPercent, this->playerHpBar.getSize().y));
 }
@@ -213,7 +224,6 @@ void Game::updateBullets()
 			// Delete bullet
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
-			--counter;
 		}
 
 		++counter;
@@ -242,13 +252,13 @@ void Game::updateEnemies()
 			// Delete enemy
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
-			--counter;
 		}
+		//Enemy player collision
 		else if (enemy->getBounds().intersects(this->player->getBounds()))
 		{
+			this->player->loseHp(this->enemies.at(counter)->getDamage());
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
-			--counter;
 		}
 
 		++counter;
@@ -328,6 +338,10 @@ void Game::render()
 	}
 
 	this->renderGUI();
+
+	//Game Over screen
+	if (this->player->getHp() <= 0)
+		this->window->draw(this->gameOverText);
 
 	this->window->display();
 }
