@@ -5,6 +5,7 @@ class Enemy
 {
 private:
 	unsigned pointCount;
+	sf::Texture rockTex;
 	sf::CircleShape shape;
 	int type;
 	float speed;
@@ -15,6 +16,7 @@ private:
 
 	// Private Functions
 	void initVariables();
+	void initTextures();
 	void initShape();
 
 public:

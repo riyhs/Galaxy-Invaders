@@ -3,7 +3,7 @@
 
 void Player::initVariables()
 {
-	this->movementSpeed = 2.f;
+	this->movementSpeed = 3.f;
 
 	this->attackCooldownMax = 10.f;
 	this->attackCooldown = this->attackCooldownMax;
@@ -27,6 +27,12 @@ void Player::initSprite()
 
 	// Resize sprite
 	this->sprite.scale(0.15f, 0.15f);
+
+	//Set starting position
+	this->sprite.setPosition(
+		600 / 2.f - this->sprite.getGlobalBounds().width / 2.f, //Middle X axle
+		800 - 100.f //100 off the bottom
+	);
 }
 
 Player::Player()
