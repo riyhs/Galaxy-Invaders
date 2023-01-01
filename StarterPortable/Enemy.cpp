@@ -4,7 +4,6 @@
 void Enemy::initVariables()
 {
 	this->pointCount = rand() % 8 + 5; // min = 5, max = 12
-	//this->type		= 0;
 	this->speed		= static_cast<float>(this->pointCount/3);
 	this->hpMax		= static_cast<int>(this->pointCount);
 	this->hp		= this->hpMax;
@@ -18,7 +17,6 @@ void Enemy::initShape()
 	this->shape.setRadius(this->pointCount * 5);
 	this->shape.setPointCount(this->pointCount);
 	this->shape.setTexture(&rockTex);
-	//this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1, 255));
 }
 
 //Rock texture to shapes
