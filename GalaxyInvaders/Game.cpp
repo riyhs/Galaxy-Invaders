@@ -35,10 +35,21 @@ void Game::initGUI()
 	this->gameOverText.setStyle(sf::Text::Bold);
 	this->gameOverText.setCharacterSize(120);
 	this->gameOverText.setFillColor(sf::Color::Red);
-	this->gameOverText.setString("GAME OVER\nTAP ENTER\nTO RESTART");
+	this->gameOverText.setString("GAME OVER");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
-		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f
+		this->window->getSize().y / 3.f /* - this->gameOverText.getGlobalBounds().height / 2.f */
+	);
+
+	//Init restart text
+	this->restartText.setFont(this->font);
+	this->restartText.setStyle(sf::Text::Bold | sf::Text::Italic);
+	this->restartText.setCharacterSize(70);
+	this->restartText.setFillColor(sf::Color::Red);
+	this->restartText.setString("TAP ENTER TO RESTART");
+	this->restartText.setPosition(
+		this->window->getSize().x / 2.f - this->restartText.getGlobalBounds().width / 2.f,
+		this->window->getSize().y / 2.f - this->restartText.getGlobalBounds().height / 2.f
 	);
 
 	//Init player GUI
@@ -345,8 +356,8 @@ void Game::updateInput()
 	{
 		this->bullets.push_back(
 			new Bullet(this->textures["BULLET"], 
-			this->player->getPos().x + 33/* + this->player->getBounds().width / 2.f */ ,
-			this->player->getPos().y - 20, 
+			this->player->getPos().x + 62,
+			this->player->getPos().y - 31, 
 			0.f, 
 			-1.f,
 			4.f)
@@ -441,6 +452,7 @@ void Game::render()
 	if (this->player->getHp() <= 0)
 	{
 		this->window->draw(this->gameOverText);
+		this->window->draw(this->restartText);
 		this->stopBgMain();
 
 		// Restart Game
