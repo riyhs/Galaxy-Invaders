@@ -1,10 +1,10 @@
-#include "Game.h"
+#include<Game.h>
 #include <iostream>
 
 // Private functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(600, 800), "OKE JALAN", sf::Style::Default);
+	this->window = new sf::RenderWindow(sf::VideoMode(700, 900), "Galaxy Invaders", sf::Style::Default);
 	this->window->setFramerateLimit(144);
 }
 
@@ -20,7 +20,7 @@ void Game::initTextures()
 void Game::initGUI()
 {
 	// Load font
-	if (!this->font.loadFromFile("Fonts/PixellettersFull.ttf"))
+	if (!this->font.loadFromFile("Assets/Fonts/PixellettersFull.ttf"))
 		std::cout << "ERROR::GAME::Failed to load font" << "\n";
 
 	//Init point text
@@ -33,9 +33,9 @@ void Game::initGUI()
 	//Init game over text
 	this->gameOverText.setFont(this->font);
 	this->gameOverText.setStyle(sf::Text::Bold);
-	this->gameOverText.setCharacterSize(150);
+	this->gameOverText.setCharacterSize(120);
 	this->gameOverText.setFillColor(sf::Color::Red);
-	this->gameOverText.setString("GAME\nOVER");
+	this->gameOverText.setString("GAME OVER\nTAP ENTER\nTO RESTART");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
 		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
@@ -142,17 +142,23 @@ void Game::updateCombat()
 		bool enemy_deleted = false;
 		for (size_t k = 0; k < this->bullets.size() && enemy_deleted == false; k++)
 		{
+			// Bullet colllision with enemy
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
-				this->points += this->enemies[i]->getPoints();
+				if (this->enemies[i]->getHp() > 0) {
+					this->enemies[i]->decreaseHp();
 
-				delete this->enemies[i];
-				this->enemies.erase(this->enemies.begin() + i);
+					delete this->bullets[k];
+					this->bullets.erase(this->bullets.begin() + k);
+				}
+				else {
+					this->points += this->enemies[i]->getPoints();
 
-				delete this->bullets[k];
-				this->bullets.erase(this->bullets.begin() + k);
-
-				enemy_deleted = true;
+					delete this->enemies[i];
+					this->enemies.erase(this->enemies.begin() + i);
+					
+					enemy_deleted = true;
+				}
 			}
 		}
 	}
@@ -264,7 +270,7 @@ void Game::updateEnemies()
 	{
 		enemy->update();
 
-		// Bullet out of screen
+		// Enemy out of screen
 		if (enemy->getBounds().top > this->window->getSize().y)
 		{
 			// Delete enemy
@@ -307,10 +313,19 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.f, 1.f);
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		this->player->move(-1.f, 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		this->player->move(1.f, 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		this->player->move(0.f, -1.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		this->player->move(0.f, 1.f);
+
 	// Add bullets
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) /* ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))*/) &&
-		this->player->canAttack()) 
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || 
+		(sf::Mouse::isButtonPressed(sf::Mouse::Left))) && 
+		this->player->canAttack())
 	{
 		this->bullets.push_back(
 			new Bullet(this->textures["BULLET"], 
@@ -367,7 +382,20 @@ void Game::render()
 	this->renderEndingBackground();
 
 	if (this->player->getHp() <= 0)
+	{
 		this->window->draw(this->gameOverText);
+
+		// Restart Game
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+		{
+			this->player->setPosition(
+				this->window->getSize().x / 2.f - this->player->getBounds().width / 2.f, //Middle X axle
+				this->window->getSize().y - 200.f //100 off the bottom
+			);
+			this->points = 0;
+			this->player->setHp(100);
+		}
+	}
 
 	this->window->display();
 }

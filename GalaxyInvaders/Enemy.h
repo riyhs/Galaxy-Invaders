@@ -27,9 +27,12 @@ public:
 	const sf::FloatRect getBounds() const;
 	const int& getPoints() const;
 	const int& getDamage() const;
+	const int& getHp() const;
+
 
 	// Functions
 	void update();
 	void render(sf::RenderTarget* target);
+	void decreaseHp();
 };
 
