@@ -20,7 +20,7 @@ void Game::initTextures()
 void Game::initGUI()
 {
 	// Load font
-	if (!this->font.loadFromFile("Fonts/PixellettersFull.ttf"))
+	if (!this->font.loadFromFile("Assets/Fonts/PixellettersFull.ttf"))
 		std::cout << "ERROR::GAME::Failed to load font" << "\n";
 
 	//Init point text
