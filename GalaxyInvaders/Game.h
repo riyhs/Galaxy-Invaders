@@ -15,6 +15,17 @@ private:
 	std::map<std::string, sf::Texture*> textures;
 	std::vector<Bullet*> bullets;
 
+	// SFX & MUSIC
+	sf::Music bgMusicMain;
+
+	sf::SoundBuffer enemyDestroyedBuff;
+	sf::SoundBuffer missileLaunchBuff;
+	sf::SoundBuffer gameOverBuff;
+	sf::SoundBuffer playerCollisionBuff;
+	sf::Sound enemyDestroyedSound;
+	sf::Sound missileLaunchSound;
+	sf::Sound gameOverSound;
+	sf::Sound playerCollisionSound;
 
 	// GUI
 	sf::Font font;
@@ -51,6 +62,7 @@ private:
 	void initBackground();
 	void initEndingBackground();
 	void initSystem();
+	void initAudio();
 
 	void initPlayer();
 	void initEnemies();
@@ -72,6 +84,15 @@ public:
 	void updateCombat();
 	void updatePollEvents();
 	void updateInput();
+	
+	void playEnemyDestroyed();
+	void playMissileLaunch();
+	void playGameOver();
+	void playPlayerCollision();
+
+	void playBgMain();
+	void stopBgMain();
+	
 	void renderGUI();
 	void renderBackground();
 	void renderEndingBackground();

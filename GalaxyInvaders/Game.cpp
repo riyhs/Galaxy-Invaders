@@ -38,7 +38,8 @@ void Game::initGUI()
 	this->gameOverText.setString("GAME OVER\nTAP ENTER\nTO RESTART");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
-		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
+		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f
+	);
 
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.f, 25.f));
@@ -72,6 +73,16 @@ void Game::initSystem()
 	this->points = 0;
 }
 
+void Game::initAudio()
+{
+	enemyDestroyedBuff.loadFromFile("Assets/SFX/whereisthepoint.wav");
+	missileLaunchBuff.loadFromFile("Assets/SFX/Explosion_103.wav");
+	gameOverBuff.loadFromFile("Assets/SFX/gameover_loud.wav");
+	playerCollisionBuff.loadFromFile("Assets/SFX/Hit_hurt_200_(34).wav");
+
+	bgMusicMain.openFromFile("Assets/Music/Music_BG.wav");
+}
+
 void Game::initPlayer()
 {
 	this->player = new Player();
@@ -91,6 +102,7 @@ Game::Game()
 	this->initBackground();
 	this->initEndingBackground();
 	this->initSystem();
+	this->initAudio();
 
 	this->initPlayer();
 	this->initEnemies();
@@ -123,6 +135,8 @@ Game::~Game()
 // Functions
 void Game::run()
 {
+	playBgMain();
+
 	while(this->window->isOpen()) 
 	{
 		this->updatePollEvents();
@@ -132,7 +146,6 @@ void Game::run()
 
 		this->render();
 	}
-
 }
 
 void Game::updateCombat()
@@ -151,9 +164,10 @@ void Game::updateCombat()
 					delete this->bullets[k];
 					this->bullets.erase(this->bullets.begin() + k);
 				}
-				else {
+				else {					
+					this->playEnemyDestroyed();
 					this->points += this->enemies[i]->getPoints();
-
+				
 					delete this->enemies[i];
 					this->enemies.erase(this->enemies.begin() + i);
 					
@@ -204,6 +218,7 @@ void Game::updateWorld()
 
 void Game::updateEndingBackground()
 {
+	this->playGameOver();
 }
 
 void Game::updatecollision()
@@ -280,6 +295,7 @@ void Game::updateEnemies()
 		//Enemy player collision
 		else if (enemy->getBounds().intersects(this->player->getBounds()))
 		{
+			this->playPlayerCollision();
 			this->player->loseHp(this->enemies.at(counter)->getDamage());
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
@@ -335,7 +351,48 @@ void Game::updateInput()
 			-1.f,
 			4.f)
 		);
+
+		this->playMissileLaunch();
 	}
+}
+
+void Game::playEnemyDestroyed()
+{
+	enemyDestroyedSound.setBuffer(enemyDestroyedBuff);
+	enemyDestroyedSound.setVolume(35.f); // Make the sound volume to 35% of it's original
+	enemyDestroyedSound.play();
+}
+
+void Game::playMissileLaunch()
+{
+	missileLaunchSound.setBuffer(missileLaunchBuff);
+	missileLaunchSound.setVolume(35.f); // Make the sound volume to 35% of it's original
+	missileLaunchSound.play();
+}
+
+void Game::playGameOver()
+{
+	gameOverSound.setBuffer(gameOverBuff);
+	gameOverSound.setVolume(35.f); // Make the sound volume to 35% of it's original
+	gameOverSound.play();
+}
+
+void Game::playPlayerCollision()
+{
+	playerCollisionSound.setBuffer(playerCollisionBuff);
+	playerCollisionSound.setVolume(55.f); // Make the sound volume to 55% of it's original
+	playerCollisionSound.play();
+}
+
+void Game::playBgMain()
+{
+	bgMusicMain.play();
+	bgMusicMain.setLoop(true);
+}
+
+void Game::stopBgMain()
+{
+	bgMusicMain.stop();
 }
 
 void Game::renderGUI()
@@ -384,16 +441,18 @@ void Game::render()
 	if (this->player->getHp() <= 0)
 	{
 		this->window->draw(this->gameOverText);
+		this->stopBgMain();
 
 		// Restart Game
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 		{
 			this->player->setPosition(
 				this->window->getSize().x / 2.f - this->player->getBounds().width / 2.f, //Middle X axle
-				this->window->getSize().y - 200.f //100 off the bottom
+				this->window->getSize().y - 200.f //200 off the bottom
 			);
 			this->points = 0;
 			this->player->setHp(100);
+			this->playBgMain();
 		}
 	}
 
