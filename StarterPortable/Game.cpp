@@ -4,7 +4,7 @@
 // Private functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(600, 800), "OKE JALAN", sf::Style::Default);
+	this->window = new sf::RenderWindow(sf::VideoMode(700, 900), "Galaxy Invaders", sf::Style::Default);
 	this->window->setFramerateLimit(144);
 }
 
@@ -378,8 +378,8 @@ void Game::render()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 		{
 			this->player->setPosition(
-				600 / 2.f - this->player->getBounds().width / 2.f, //Middle X axle
-				800 - 100.f //100 off the bottom
+				this->window->getSize().x / 2.f - this->player->getBounds().width / 2.f, //Middle X axle
+				this->window->getSize().y - 200.f //100 off the bottom
 			);
 			this->points = 0;
 			this->player->setHp(100);

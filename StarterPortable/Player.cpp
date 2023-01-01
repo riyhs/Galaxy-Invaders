@@ -30,8 +30,8 @@ void Player::initSprite()
 
 	//Set starting position
 	this->sprite.setPosition(
-		600 / 2.f - this->sprite.getGlobalBounds().width / 2.f, //Middle X axle
-		800 - 100.f //100 off the bottom
+		700 / 2.f - this->sprite.getGlobalBounds().width / 2.f, //Middle X axle
+		900 - 200.f //100 off the bottom
 	);
 }
 
