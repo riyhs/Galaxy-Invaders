@@ -4,7 +4,7 @@
 // Private functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "OKE JALAN", sf::Style::Default);
+	this->window = new sf::RenderWindow(sf::VideoMode(600, 800), "OKE JALAN", sf::Style::Default);
 	this->window->setFramerateLimit(144);
 }
 
@@ -24,16 +24,18 @@ void Game::initGUI()
 		std::cout << "ERROR::GAME::Failed to load font" << "\n";
 
 	//Init point text
-	this->pointText.setPosition(700.f, 25.f);
+	this->pointText.setPosition(20.f, 25.f);
 	this->pointText.setFont(this->font);
-	this->pointText.setCharacterSize(20);
+	this->pointText.setCharacterSize(70);
 	this->pointText.setFillColor(sf::Color::White);
 	this->pointText.setString("test");
 
+	//Init game over text
 	this->gameOverText.setFont(this->font);
-	this->gameOverText.setCharacterSize(60);
+	this->gameOverText.setStyle(sf::Text::Bold);
+	this->gameOverText.setCharacterSize(150);
 	this->gameOverText.setFillColor(sf::Color::Red);
-	this->gameOverText.setString("Game Over");
+	this->gameOverText.setString("GAME\nOVER");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
 		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
@@ -54,6 +56,15 @@ void Game::initBackground()
 		std::cout << "ERROR::GAME::Failed to load background" << "\n";
 	}
 	this->worldBackground.setTexture(this->worldBackgroundTex);
+}
+
+void Game::initEndingBackground()
+{
+	if (!this->endingBackgroundTex.loadFromFile("Assets/Textures/ending.jpg"))
+	{
+		std::cout << "ERROR: Failed to load background" << "n";
+	}
+	this->endingBackground.setTexture(this->endingBackgroundTex);
 }
 
 void Game::initSystem()
@@ -78,6 +89,7 @@ Game::Game()
 	this->initTextures();
 	this->initGUI();
 	this->initBackground();
+	this->initEndingBackground();
 	this->initSystem();
 
 	this->initPlayer();
@@ -163,6 +175,8 @@ void Game::update()
 	this->updateGUI();
 	
 	this->updateWorld();
+
+	this->updateEndingBackground();
 }
 
 void Game::updateGUI()
@@ -179,6 +193,10 @@ void Game::updateGUI()
 }
 
 void Game::updateWorld()
+{
+}
+
+void Game::updateEndingBackground()
 {
 }
 
@@ -317,6 +335,12 @@ void Game::renderBackground()
 	this->window->draw(this->worldBackground);
 }
 
+void Game::renderEndingBackground()
+{
+	if (this->player->getHp() <= 0)
+		this->window->draw(this->endingBackground);
+}
+
 void Game::render()
 {
 	this->window->clear();
@@ -340,6 +364,8 @@ void Game::render()
 	this->renderGUI();
 
 	//Game Over screen
+	this->renderEndingBackground();
+
 	if (this->player->getHp() <= 0)
 		this->window->draw(this->gameOverText);
 

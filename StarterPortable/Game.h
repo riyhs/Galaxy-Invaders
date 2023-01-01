@@ -26,6 +26,9 @@ private:
 	sf::Texture worldBackgroundTex;
 	sf::Sprite worldBackground;
 
+	sf::Texture endingBackgroundTex;
+	sf::Sprite endingBackground;
+
 	//system
 	unsigned points;
 
@@ -46,6 +49,7 @@ private:
 	void initTextures();
 	void initGUI();
 	void initBackground();
+	void initEndingBackground();
 	void initSystem();
 
 	void initPlayer();
@@ -62,6 +66,7 @@ public:
 	void updateBullets();
 	void updateGUI();
 	void updateWorld();
+	void updateEndingBackground();
 	void updatecollision();
 	void updateEnemies();
 	void updateCombat();
@@ -69,6 +74,7 @@ public:
 	void updateInput();
 	void renderGUI();
 	void renderBackground();
+	void renderEndingBackground();
 	void render();
 };
 
