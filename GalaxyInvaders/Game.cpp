@@ -313,8 +313,19 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.f, 1.f);
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		this->player->move(-1.f, 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		this->player->move(1.f, 0.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		this->player->move(0.f, -1.f);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		this->player->move(0.f, 1.f);
+
 	// Add bullets
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && this->player->canAttack()) 
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || 
+		(sf::Mouse::isButtonPressed(sf::Mouse::Left))) && 
+		this->player->canAttack())
 	{
 		this->bullets.push_back(
 			new Bullet(this->textures["BULLET"], 
