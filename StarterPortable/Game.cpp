@@ -33,9 +33,9 @@ void Game::initGUI()
 	//Init game over text
 	this->gameOverText.setFont(this->font);
 	this->gameOverText.setStyle(sf::Text::Bold);
-	this->gameOverText.setCharacterSize(150);
+	this->gameOverText.setCharacterSize(120);
 	this->gameOverText.setFillColor(sf::Color::Red);
-	this->gameOverText.setString("GAME\nOVER");
+	this->gameOverText.setString("GAME OVER\nTAP ENTER\nTO RESTART");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2.f - this->gameOverText.getGlobalBounds().width / 2.f,
 		this->window->getSize().y / 2.f - this->gameOverText.getGlobalBounds().height / 2.f);
@@ -371,7 +371,20 @@ void Game::render()
 	this->renderEndingBackground();
 
 	if (this->player->getHp() <= 0)
+	{
 		this->window->draw(this->gameOverText);
+
+		// Restart Game
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+		{
+			this->player->setPosition(
+				600 / 2.f - this->player->getBounds().width / 2.f, //Middle X axle
+				800 - 100.f //100 off the bottom
+			);
+			this->points = 0;
+			this->player->setHp(100);
+		}
+	}
 
 	this->window->display();
 }
