@@ -60,6 +60,11 @@ const int& Enemy::getDamage() const
 	return this->damage;
 }
 
+const int& Enemy::getHp() const
+{
+	return this->hp;
+}
+
 // Functions
 void Enemy::update()
 {
@@ -69,4 +74,9 @@ void Enemy::update()
 void Enemy::render(sf::RenderTarget* target)
 {
 	target->draw(this->shape);
+}
+
+void Enemy::decreaseHp()
+{
+	this->hp = this->getHp() - 2.0;
 }

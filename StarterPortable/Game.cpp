@@ -142,17 +142,23 @@ void Game::updateCombat()
 		bool enemy_deleted = false;
 		for (size_t k = 0; k < this->bullets.size() && enemy_deleted == false; k++)
 		{
+			// Bullet colllision with enemy
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
-				this->points += this->enemies[i]->getPoints();
+				if (this->enemies[i]->getHp() > 0) {
+					this->enemies[i]->decreaseHp();
 
-				delete this->enemies[i];
-				this->enemies.erase(this->enemies.begin() + i);
+					delete this->bullets[k];
+					this->bullets.erase(this->bullets.begin() + k);
+				}
+				else {
+					this->points += this->enemies[i]->getPoints();
 
-				delete this->bullets[k];
-				this->bullets.erase(this->bullets.begin() + k);
-
-				enemy_deleted = true;
+					delete this->enemies[i];
+					this->enemies.erase(this->enemies.begin() + i);
+					
+					enemy_deleted = true;
+				}
 			}
 		}
 	}
@@ -264,7 +270,7 @@ void Game::updateEnemies()
 	{
 		enemy->update();
 
-		// Bullet out of screen
+		// Enemy out of screen
 		if (enemy->getBounds().top > this->window->getSize().y)
 		{
 			// Delete enemy
@@ -308,9 +314,7 @@ void Game::updateInput()
 		this->player->move(0.f, 1.f);
 
 	// Add bullets
-	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space) /* ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))*/) &&
-		this->player->canAttack()) 
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && this->player->canAttack()) 
 	{
 		this->bullets.push_back(
 			new Bullet(this->textures["BULLET"], 
