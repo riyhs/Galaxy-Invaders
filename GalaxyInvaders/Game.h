@@ -32,6 +32,7 @@ private:
 	sf::Text pointText;
 
 	sf::Text gameOverText;
+	sf::Text restartText;
 
 	//Background
 	sf::Texture worldBackgroundTex;
