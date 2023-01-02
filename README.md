@@ -24,5 +24,3 @@
 - Use D / → to move right
 - Use Space / left-click to shoot
 - Use Esc to exit
-
-atau [Download APK](https://github.com/riyhs/jelajah-solo/blob/main/build/app/outputs/flutter-apk/app-release.apk)
