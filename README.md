@@ -5,8 +5,17 @@
   SFML Game for Final Assignment Pogramming Concept - Informatika UNS 2022
 
 ## Table of Contents
+- [Contributor](#contributor)
 - [Installation](#installation)
 - [Keybinds](#keybinds)
+
+
+## Contributor
+- [Naufal Ega Setyo Nasrudin](https://github.com/Muunnn)
+- [Rifqi Ghaida Sakhi](https://github.com/rifqiigs)
+- [Rista Purnamasari](https://github.com/ristapurnama)
+- [Riyaldi Hasan Setiawan](https://github.com/riyhs)
+- [Masud Zahron Notosoewito](https://github.com/MaZuTo07)
 
 
 ## Installation
@@ -16,6 +25,7 @@
 - Paste the link to the field
 - Clone
 - Ctrl + F5 to run the game
+
 
 ## Keybinds
 - Use W / ↑ to move up
