@@ -2,7 +2,7 @@
   Galaxy Invaders
 </h1>
 <p align="center">
-  SFML Game for Final Assignment Pogramming Concept - Informatika UNS 2022
+  SFML Game for Final Assignment Programming Concept - Informatika UNS 2022
 
 ## Table of Contents
 - [Contributor](#contributor)
